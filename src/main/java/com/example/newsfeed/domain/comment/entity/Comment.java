@@ -1,4 +1,4 @@
-package com.example.newsfeed.domain.comment;
+package com.example.newsfeed.domain.comment.entity;
 
 import com.example.newsfeed.common.BaseEntity;
 import com.example.newsfeed.domain.post.Post;
@@ -37,4 +37,8 @@ public class Comment extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    public void updateComment(String content) {
+        this.content = content;
+    }
 }
