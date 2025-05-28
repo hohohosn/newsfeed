@@ -20,7 +20,7 @@ public class UserRequestDto {
     private LocalDate birth;
     private boolean isDeleted;
 
-    public User toEntity(String email, String password, String phoneNumber, String userName, LocalDate birth){
+    public User toEntity(){
         return new User(email,password,phoneNumber,userName,birth);
     }
 }

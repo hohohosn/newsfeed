@@ -49,4 +49,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "friend")
     List<Friendship> follower = new ArrayList<>();
 
+    public void setEncodedPassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
 }
