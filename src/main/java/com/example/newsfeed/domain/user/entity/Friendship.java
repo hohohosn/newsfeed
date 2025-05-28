@@ -10,6 +10,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "friendships")
 @Getter
 public class Friendship {
+    public Friendship(User user, User friend) {
+        this.user = user;
+        this.friend = friend;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "friendship_id")

@@ -1,21 +1,18 @@
 package com.example.newsfeed.domain.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class UserResponseDto {
     private Long userId;
     private String email;
     private String phoneNumber;
     private String userName;
     private LocalDate birth;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
-    private Long following;
-    private Long follower;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
