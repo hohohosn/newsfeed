@@ -18,6 +18,7 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
+    @PostMapping
     public ResponseEntity<CommentResponseDto> saveComment(
             @RequestBody CreateCommentRequestDto requestDto
             ) {
