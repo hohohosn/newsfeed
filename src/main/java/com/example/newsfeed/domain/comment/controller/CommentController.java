@@ -18,15 +18,15 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
-//    public ResponseEntity<CommentResponseDto> saveComment(
-//            @RequestBody CreateCommentRequestDto requestDto
-//            ) {
-//        commentService.saveComment(
-//                requestDto.getPostId(),
-//                requestDto.getContent()
-//        );
-//        return new ResponseEntity<>(HttpStatus.CREATED);
-//    }
+    public ResponseEntity<CommentResponseDto> saveComment(
+            @RequestBody CreateCommentRequestDto requestDto
+            ) {
+        commentService.saveComment(
+                requestDto.getPostId(),
+                requestDto.getContent()
+        );
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
     // todo 수정값은 body?
     @PatchMapping("/{commentId}")
