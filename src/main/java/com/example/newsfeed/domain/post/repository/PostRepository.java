@@ -1,6 +1,6 @@
 package com.example.newsfeed.domain.post.repository;
 
-import com.example.newsfeed.domain.post.Post;
+import com.example.newsfeed.domain.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
