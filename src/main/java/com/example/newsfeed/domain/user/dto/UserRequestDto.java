@@ -18,9 +18,7 @@ public class UserRequestDto {
     private String phoneNumber;
     private String userName;
     private LocalDate birth;
-    private boolean isDeleted;
 
-    public User toEntity(){
-        return new User(email,password,phoneNumber,userName,birth);
-    }
+
+
 }
