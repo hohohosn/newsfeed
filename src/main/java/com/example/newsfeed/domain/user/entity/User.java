@@ -1,4 +1,4 @@
-package com.example.newsfeed.domain.user;
+package com.example.newsfeed.domain.user.entity;
 
 import com.example.newsfeed.common.BaseEntity;
 import jakarta.persistence.*;
@@ -24,6 +24,8 @@ public class User extends BaseEntity {
         this.birth = birth;
         this.isDeleted = false;
     }
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

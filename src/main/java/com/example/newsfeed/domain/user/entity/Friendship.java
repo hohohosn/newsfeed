@@ -1,4 +1,4 @@
-package com.example.newsfeed.domain.user;
+package com.example.newsfeed.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
