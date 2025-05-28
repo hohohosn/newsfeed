@@ -4,7 +4,7 @@ import com.example.newsfeed.domain.comment.dto.FindAllCommentResponseDto;
 import com.example.newsfeed.domain.comment.dto.UpdateCommentRequestDto;
 import com.example.newsfeed.domain.comment.entity.Comment;
 import com.example.newsfeed.domain.comment.repository.CommentRepository;
-import com.example.newsfeed.domain.post.Post;
+import com.example.newsfeed.domain.post.entity.Post;
 import com.example.newsfeed.domain.post.repository.PostRepository;
 import com.example.newsfeed.domain.user.entity.User;
 import com.example.newsfeed.domain.user.repository.UserRepository;

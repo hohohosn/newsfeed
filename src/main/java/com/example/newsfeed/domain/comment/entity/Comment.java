@@ -1,7 +1,7 @@
 package com.example.newsfeed.domain.comment.entity;
 
 import com.example.newsfeed.common.BaseEntity;
-import com.example.newsfeed.domain.post.Post;
+import com.example.newsfeed.domain.post.entity.Post;
 import com.example.newsfeed.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
