@@ -29,10 +29,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@RequestBody UserRequestDto userRequestDto){
         Long id = userService.signup(userRequestDto);
-        //location 설정
-        URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{userId}").buildAndExpand(id).toUri();
-        // 리다이렉트 PRG
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).location(uri).build();
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).body(id);
     }
 
     // 회원 탈퇴
@@ -48,15 +45,14 @@ public class UserController {
 
     // 로그인
     @PostMapping("/signin")
-    public ResponseEntity<LoginResponseDto> signin (@RequestBody LoginRequestDto loginRequestDto,
+    public ResponseEntity<Long> signin (@RequestBody LoginRequestDto loginRequestDto,
                                                     HttpServletRequest request){
         User user = userService.login(loginRequestDto);
 
         HttpSession session = request.getSession();
         session.setAttribute("loginUser", user);
-        URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{userId}").buildAndExpand(user.getId()).toUri();
 
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).location(uri).build();
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).body(user.getId());
     }
 
     // 로그아웃
