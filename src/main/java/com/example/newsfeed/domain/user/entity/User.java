@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,6 +18,8 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 @Getter
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE user_id = ?")
+@SQLRestriction("is_deleted = false")
 public class User extends BaseEntity {
 
     public User(String email, String name, String password, String phoneNumber, LocalDate birth) {
@@ -25,7 +30,6 @@ public class User extends BaseEntity {
         this.birth = birth;
         this.isDeleted = false;
     }
-
 
 
     @Id
@@ -54,14 +58,13 @@ public class User extends BaseEntity {
         this.password = encodedPassword;
     }
 
-    public void delete() {
-        isDeleted = true;
-    }
+//    public void delete() {
+//        isDeleted = true;
+//    }
 
     public void updateProfile(String name, String phoneNumber, LocalDate birth) {
         Optional.ofNullable(name).ifPresent(n -> this.name = n);
         Optional.ofNullable(phoneNumber).ifPresent(pn -> this.phoneNumber = pn);
         Optional.ofNullable(birth).ifPresent(b -> this.birth = b);
     }
-
 }

@@ -43,14 +43,12 @@ public class UserService {
     // 회원탈퇴
     @Transactional
     public void withdrawal(Long id) {
-        User user = findById(id);
-        user.delete();
+        User user = findByIdOrElseThrow(id);
+        userRepository.delete(user);
     }
 
     public User login(LoginRequestDto dto) {
-        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new PasswordMismatchException("계정이 올바르지 않습니다."));
-        //탈퇴한 회원인지 확인
-        checkIsDelete(user);
+        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new EntityNotFoundException("계정이 올바르지 않습니다"));
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new PasswordMismatchException("비밀번호가 올바르지 않습니다.");
         }
@@ -59,24 +57,20 @@ public class UserService {
     }
 
     public UserResponseDto getProfile(Long id) {
-        User user = findById(id);
+        User user = findByIdOrElseThrow(id);
 
-        //탈퇴한 회원인지 확인
-        checkIsDelete(user);
-
-        if(user.getIsDeleted()) throw new IllegalStateException("이미 탈퇴한 회원입니다");
         return UserMapper.toResponseDto(user);
     }
 
     @Transactional
     public UserResponseDto updateProfile(Long id, UserRequestDto dto) {
-        User user = findById(id);
+        User user = findByIdOrElseThrow(id);
         user.updateProfile(dto.getUserName(), dto.getPhoneNumber(), dto.getBirth());
         return UserMapper.toResponseDto(user);
     }
     @Transactional
     public void updatePassword(Long id, String oldPassword, String newPassword) {
-        User user = findById(id);
+        User user = findByIdOrElseThrow(id);
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new PasswordMismatchException("비밀번호가 올바르지 않습니다.");
         }
@@ -86,24 +80,22 @@ public class UserService {
 
     @Transactional
     public void addFriend(Long id, Long friendId) {
-        User user = findById(id);
-        User friend = findById(friendId);
+        User user = findByIdOrElseThrow(id);
+        User friend = findByIdOrElseThrow(friendId);
         friendshipRepository.save(new Friendship(user, friend));
     }
 
     @Transactional
     public void deleteFriend(Long id, Long friendId) {
-        User user = findById(id);
-        User friend = findById(friendId);
-        Friendship friendship = friendshipRepository.findByUserAndFriend(user, friend).orElseThrow(() -> new EntityNotFoundException("유저(id:" + id + ")와 유저(id:" + id + ")의 친구 관계가 없습니다."));
+        User user = findByIdOrElseThrow(id);
+        User friend = findByIdOrElseThrow(friendId);
+        Friendship friendship = friendshipRepository.findByUserAndFriend(user, friend).orElseThrow(() -> new EntityNotFoundException("유저(id:" + user.getId() + ")와 유저(id:" + friend.getId() + ")의 친구 관계가 없습니다."));
         friendshipRepository.delete(friendship);
     }
 
-    private User findById(Long id) {
-       return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("유자(id:" + id + ")가 존재하지 않습니다."));
+    private User findByIdOrElseThrow(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("유자(id:" + id + ")가 존재하지 않습니다."));
     }
 
-    private void checkIsDelete(User user) {
-        if(user.getIsDeleted()) throw new IllegalStateException("이미 탈퇴한 회원입니다");
-    }
+
 }
