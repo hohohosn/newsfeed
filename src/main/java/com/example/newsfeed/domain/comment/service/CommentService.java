@@ -58,7 +58,7 @@ public class CommentService {
 
         return new LikeCommentResponseDto(
                 findComment.getId(),
-                findComment.getLike()
+                findComment.getLikes()
         );
     }
 
@@ -68,7 +68,7 @@ public class CommentService {
 
         return new LikeCommentResponseDto(
                 findComment.getId(),
-                findComment.getLike()
+                findComment.getLikes()
         );
     }
 }

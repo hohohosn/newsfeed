@@ -18,7 +18,7 @@ public class Comment extends BaseEntity{
         this.post = post;
         this.user = user;
         this.content = content;
-        this.like = 0L;
+        this.likes = 0L;
         this.isDeleted = false;
     }
 
@@ -27,7 +27,7 @@ public class Comment extends BaseEntity{
     @Column(name = "comment_id")
     private Long id;
     private String content;
-    private Long like;
+    private Long likes;
     private Boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,6 +43,6 @@ public class Comment extends BaseEntity{
     }
 
     public void addLike() {
-        ++this.like;
+        ++this.likes;
     }
 }
