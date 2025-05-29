@@ -10,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.net.URI;
+
 
 @Slf4j
 @RestController
@@ -22,6 +22,23 @@ public class UserController {
 
     private final UserService userService;
 
+    // 접근 권한 확인
+    private void verifyUserAccess(HttpSession session,Long userId){
+        User loginUser = (User)session.getAttribute("loginUser");
+        Long loginId = loginUser.getId();
+
+        if(!loginId.equals(userId)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"접근 권한이 존재하지 않습니다.");
+        }
+    }
+
+    // 아이디와 친구아이디 관계
+    private void checkUserEqualsFriend(Long userId, Long FriendId){
+        if(userId.equals(FriendId)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"잘못된 요청입니다");
+        }
+    }
+
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@RequestBody UserRequestDto userRequestDto){
@@ -30,10 +47,16 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/{userid}")
-    public ResponseEntity<Void> withdrawal(@PathVariable Long userid, HttpServletRequest request){
-        userService.withdrawal(userid);
-        HttpSession session = request.getSession(false);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> withdrawal(@PathVariable Long userId,
+                                           HttpServletRequest request,
+                                           HttpSession session){
+
+        // 접근 권한 확인
+        verifyUserAccess(session,userId);
+
+        userService.withdrawal(userId);
+        session = request.getSession(false);
 
         // 세션 삭제
         if (session != null) {session.invalidate();}
@@ -65,46 +88,78 @@ public class UserController {
     }
 
     // 프로필 조회
-    @GetMapping("/{userid}")
-    public ResponseEntity<UserResponseDto> selectUser(@PathVariable Long userid){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getProfile(userid));
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseDto> selectUser(@PathVariable Long userId,
+                                                      HttpSession session) {
+        // 접근 권한 확인
+        verifyUserAccess(session,userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getProfile(userId));
     }
 
     // 프로필 수정
     @PatchMapping("/{userId}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long userId,
-                                                      @RequestBody UserRequestDto userRequestDto){
+                                                      @RequestBody UserRequestDto userRequestDto,
+                                                      HttpSession session){
+        // 접근 권한 확인
+        verifyUserAccess(session,userId);
+
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateProfile(userId,userRequestDto));
     }
 
     // 비밀번호 수정
-    @PatchMapping("/{userid}/password")
-    public ResponseEntity<Void> updatePassword(@PathVariable Long userid,
+    @PatchMapping("/{userId}/password")
+    public ResponseEntity<Void> updatePassword(@PathVariable Long userId,
                                                @RequestParam String oldPassword,
-                                               @RequestParam String newPassword){
-        userService.updatePassword(userid, oldPassword, newPassword);
+                                               @RequestParam String newPassword,
+                                               HttpSession session){
+        // 접근 권한 확인
+        verifyUserAccess(session,userId);
+
+
+        userService.updatePassword(userId, oldPassword, newPassword);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     
     // 친구 추가
-    @PostMapping("/{userid}/friendship")
-    public ResponseEntity<Void> addFriend(@PathVariable Long userid,
-                                          @RequestParam Long friendId){
-        userService.addFriend(userid, friendId);
+    @PostMapping("/{userId}/friendship")
+    public ResponseEntity<Void> addFriend(@PathVariable Long userId,
+                                          @RequestParam Long friendId,
+                                          HttpSession session){
+        // userId, friendId 관계
+        checkUserEqualsFriend(userId, friendId);
+
+        // 접근 권한 확인
+        verifyUserAccess(session,userId);
+
+        userService.addFriend(userId, friendId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     
     // 친구 삭제
-    @DeleteMapping("/{userid}/friendship")
-    public ResponseEntity<Void> deleteFriend(@PathVariable Long userid,
-                                             @RequestParam Long friendId){
-        userService.deleteFriend(userid, friendId);
+    @DeleteMapping("/{userId}/friendship")
+    public ResponseEntity<Void> deleteFriend(@PathVariable Long userId,
+                                             @RequestParam Long friendId,
+                                             HttpSession session){
+        // userId, friendId 관계
+        checkUserEqualsFriend(userId, friendId);
+
+        // 접근 권한 확인
+        verifyUserAccess(session,userId);
+
+        userService.deleteFriend(userId, friendId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    // TODO pathVariable 지우고 세션에서...
+    // (팔로우, 팔로워) 수, 목록
     @GetMapping("/{userId}/follow")
-    public ResponseEntity<UserFollowResponseDto> getUserFollow(@PathVariable Long userId) {
+    public ResponseEntity<UserFollowResponseDto> getUserFollow(@PathVariable Long userId,
+                                                               HttpSession session) {
+
+        // 접근 권한 확인
+        verifyUserAccess(session,userId);
+
         UserFollowResponseDto dto = userService.getUserFollow(userId);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
