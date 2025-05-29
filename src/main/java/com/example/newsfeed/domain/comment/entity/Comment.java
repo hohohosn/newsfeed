@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Comment extends BaseEntity{
 
-    public Comment(Post post, User user, String content) {
-        this.post = post;
+    public Comment(Entity post, User user, String content) {
+        this.post = (Post) post;
         this.user = user;
         this.content = content;
         this.like = 0L;

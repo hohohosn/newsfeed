@@ -1,20 +1,27 @@
 package com.example.newsfeed.domain.post.entity;
 
+import com.example.newsfeed.common.BaseEntity;
 import com.example.newsfeed.domain.user.entity.User;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.*;
+
 import java.time.LocalDateTime;
 
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Table(name = "posts")
+@SQLDelete(sql = "UPDATE posts SET deleted = true WHERE id = ?")
+@FilterDef(name = "deletedPostFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedPostFilter", condition = "is_deleted = :isDeleted")
 
-
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +34,9 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false)
+    private Long likeCount = 0L;
+
 
     private String author;
 
@@ -37,32 +47,16 @@ public class Post {
 
     private LocalDateTime updatedAt;
 
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = createdAt;
-    }
-
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-
     //유저랑 관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 
-   /*소프트 딜리트 추가 중
+   //소프트 딜리트 추가 중
 
    @Column(nullable = false)
    private boolean isDeleted = false;
-
-    */
 
 
 }

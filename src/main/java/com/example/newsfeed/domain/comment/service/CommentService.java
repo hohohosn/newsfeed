@@ -9,6 +9,7 @@ import com.example.newsfeed.domain.post.entity.Post;
 import com.example.newsfeed.domain.post.repository.PostRepository;
 import com.example.newsfeed.domain.user.entity.User;
 import com.example.newsfeed.domain.user.repository.UserRepository;
+import jakarta.persistence.Entity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,7 @@ public class CommentService {
                 () -> new IllegalArgumentException("Does not exist id = " + postId));
         User user = userRepository.findById(post.getUser().getId()).orElseThrow(
                 () -> new IllegalArgumentException("Does not exist id = " + post.getUser().getId()));
-        Comment comment = new Comment(post, user, content);
+        Comment comment = new Comment((Entity) post, user, content);
         commentRepository.save(comment);
         return comment.getId();
     }
