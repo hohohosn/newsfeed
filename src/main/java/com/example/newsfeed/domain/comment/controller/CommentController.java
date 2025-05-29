@@ -27,9 +27,7 @@ public class CommentController {
                 requestDto.getPostId(),
                 requestDto.getContent()
         );
-
         URI location = URI.create("/comments/" + commentId);
-
         return ResponseEntity.created(location).build();
     }
 
@@ -39,9 +37,7 @@ public class CommentController {
             @RequestBody UpdateCommentRequestDto requestDto
             ) {
         commentService.updateCommentById(commentId, requestDto);
-
         URI location = URI.create("/comments/" + commentId);
-
         return ResponseEntity.status(HttpStatus.SEE_OTHER).location(location).build();
     }
 

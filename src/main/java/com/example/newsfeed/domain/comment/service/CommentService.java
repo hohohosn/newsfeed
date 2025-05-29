@@ -1,6 +1,7 @@
 package com.example.newsfeed.domain.comment.service;
 
 import com.example.newsfeed.domain.comment.dto.FindAllCommentResponseDto;
+import com.example.newsfeed.domain.comment.dto.LikeCommentResponseDto;
 import com.example.newsfeed.domain.comment.dto.UpdateCommentRequestDto;
 import com.example.newsfeed.domain.comment.entity.Comment;
 import com.example.newsfeed.domain.comment.repository.CommentRepository;
@@ -32,14 +33,12 @@ public class CommentService {
                 () -> new IllegalArgumentException("Does not exist id = " + post.getUser().getId()));
         Comment comment = new Comment(post, user, content);
         commentRepository.save(comment);
-
         return comment.getId();
     }
 
     @Transactional
     public void updateCommentById(Long commentId, UpdateCommentRequestDto requestDto) {
         Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
-
         findComment.updateComment(requestDto.getContent());
     }
 
@@ -52,5 +51,24 @@ public class CommentService {
     public List<FindAllCommentResponseDto> findAllComment() {
         List<Comment> comments = commentRepository.findAll();
         return comments.stream().map(FindAllCommentResponseDto::toDto).toList();
+    }
+
+    public LikeCommentResponseDto showLikeAtCommentId(Long commentId) {
+        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+
+        return new LikeCommentResponseDto(
+                findComment.getId(),
+                findComment.getLike()
+        );
+    }
+
+    public LikeCommentResponseDto addLikeAtCommentId(Long commentId) {
+        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+        findComment.addLike();
+
+        return new LikeCommentResponseDto(
+                findComment.getId(),
+                findComment.getLike()
+        );
     }
 }
