@@ -5,16 +5,19 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 @Getter
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE user_id = ?")
+@SQLRestriction("is_deleted = false")
 public class User extends BaseEntity {
 
     public User(String email, String name, String password, String phoneNumber, LocalDate birth) {
@@ -25,7 +28,6 @@ public class User extends BaseEntity {
         this.birth = birth;
         this.isDeleted = false;
     }
-
 
 
     @Id
@@ -43,20 +45,19 @@ public class User extends BaseEntity {
 
     // 내가 친구추가한 사람들
     @OneToMany(mappedBy = "user")
-    List<Friendship> following = new ArrayList<>();
+    private Set<Friendship> following = new HashSet<>();
 
 
     // 나를 친구추가한 사람들
     @OneToMany(mappedBy = "friend")
-    List<Friendship> follower = new ArrayList<>();
+    private Set<Friendship> follower = new HashSet<>();
+
+
 
     public void setEncodedPassword(String encodedPassword) {
         this.password = encodedPassword;
     }
 
-    public void delete() {
-        isDeleted = true;
-    }
 
     public void updateProfile(String name, String phoneNumber, LocalDate birth) {
         Optional.ofNullable(name).ifPresent(n -> this.name = n);
@@ -64,4 +65,11 @@ public class User extends BaseEntity {
         Optional.ofNullable(birth).ifPresent(b -> this.birth = b);
     }
 
+    public List<User> getFollowingList() {
+        return following.stream().map(Friendship::getFriend).toList();
+    }
+
+    public List<User> getFollowerList() {
+        return follower.stream().map(Friendship::getUser).toList();
+    }
 }

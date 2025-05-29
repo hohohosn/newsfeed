@@ -1,9 +1,6 @@
 package com.example.newsfeed.domain.user.controller;
 
-import com.example.newsfeed.domain.user.dto.LoginRequestDto;
-import com.example.newsfeed.domain.user.dto.LoginResponseDto;
-import com.example.newsfeed.domain.user.dto.UserRequestDto;
-import com.example.newsfeed.domain.user.dto.UserResponseDto;
+import com.example.newsfeed.domain.user.dto.*;
 import com.example.newsfeed.domain.user.entity.User;
 import com.example.newsfeed.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,10 +26,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@RequestBody UserRequestDto userRequestDto){
         Long id = userService.signup(userRequestDto);
-        //location 설정
-        URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{userId}").buildAndExpand(id).toUri();
-        // 리다이렉트 PRG
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).location(uri).build();
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).body(id);
     }
 
     // 회원 탈퇴
@@ -48,15 +42,14 @@ public class UserController {
 
     // 로그인
     @PostMapping("/signin")
-    public ResponseEntity<LoginResponseDto> signin (@RequestBody LoginRequestDto loginRequestDto,
+    public ResponseEntity<Long> signin (@RequestBody LoginRequestDto loginRequestDto,
                                                     HttpServletRequest request){
         User user = userService.login(loginRequestDto);
 
         HttpSession session = request.getSession();
         session.setAttribute("loginUser", user);
-        URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{userId}").buildAndExpand(user.getId()).toUri();
 
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).location(uri).build();
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).body(user.getId());
     }
 
     // 로그아웃
@@ -107,5 +100,12 @@ public class UserController {
                                              @RequestParam Long friendId){
         userService.deleteFriend(userid, friendId);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // TODO pathVariable 지우고 세션에서...
+    @GetMapping("/{userId}/follow")
+    public ResponseEntity<UserFollowResponseDto> getUserFollow(@PathVariable Long userId) {
+        UserFollowResponseDto dto = userService.getUserFollow(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 }
