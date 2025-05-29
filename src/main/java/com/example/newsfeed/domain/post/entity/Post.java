@@ -1,39 +1,68 @@
 package com.example.newsfeed.domain.post.entity;
 
-import com.example.newsfeed.common.BaseEntity;
 import com.example.newsfeed.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import java.time.LocalDateTime;
+
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "posts")
 @Getter
-public class Post extends BaseEntity {
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 
-    public Post(String content, User user, String title) {
-        this.content = content;
-        this.user = user;
-        this.like = 0L;
-        this.title = title;
-        this.isDeleted = false;
-    }
 
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
     private Long id;
-    private String title;
-    private String content;
-    private Long like;
-    private Boolean isDeleted;
 
+
+    @Column(nullable = false)
+    private String title;
+
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+
+    private String author;
+
+
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+
+    private LocalDateTime updatedAt;
+
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = createdAt;
+    }
+
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+
+    //유저랑 관계
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
+   /*소프트 딜리트 추가 중
+
+   @Column(nullable = false)
+   private boolean isDeleted = false;
+
+    */
 
 
 }
