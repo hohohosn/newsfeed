@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -107,7 +105,7 @@ public class UserService {
     }
 
     private User findByIdOrElseThrow(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("유자(id:" + id + ")가 존재하지 않습니다."));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("유저(id:" + id + ")가 존재하지 않습니다."));
     }
 
 
