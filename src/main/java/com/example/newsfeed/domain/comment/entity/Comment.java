@@ -7,8 +7,10 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @Entity
+@Where(clause = "is_deleted = false")   // 전체 조회 시 삭제된 데이터 안보여줌
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "comments")
 @Getter
@@ -34,7 +36,7 @@ public class Comment extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "post_id")
     private Post post;
 
