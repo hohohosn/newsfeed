@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,25 +20,29 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<CommentResponseDto> saveComment(
+    public ResponseEntity<Void> saveComment(
             @RequestBody CreateCommentRequestDto requestDto
             ) {
-        commentService.saveComment(
+        Long commentId = commentService.saveComment(
                 requestDto.getPostId(),
                 requestDto.getContent()
         );
-        return new ResponseEntity<>(HttpStatus.CREATED);
+
+        URI location = URI.create("/comments/" + commentId);
+
+        return ResponseEntity.created(location).build();
     }
 
-    // todo 수정값은 body?
     @PatchMapping("/{commentId}")
-    public ResponseEntity<CommentResponseDto> updateCommentById(
+    public ResponseEntity<Void> updateCommentById(
             @PathVariable Long commentId,
             @RequestBody UpdateCommentRequestDto requestDto
             ) {
         commentService.updateCommentById(commentId, requestDto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        URI location = URI.create("/comments/" + commentId);
+
+        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(location).build();
     }
 
     @DeleteMapping("/{commentId}")

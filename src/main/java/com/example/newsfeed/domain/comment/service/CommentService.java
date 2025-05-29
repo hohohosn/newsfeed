@@ -25,13 +25,15 @@ public class CommentService {
     }
 
     @Transactional
-    public void saveComment(Long postId, String content) {
+    public Long saveComment(Long postId, String content) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("Does not exist id = " + postId));
         User user = userRepository.findById(post.getUser().getId()).orElseThrow(
                 () -> new IllegalArgumentException("Does not exist id = " + post.getUser().getId()));
         Comment comment = new Comment(post, user, content);
         commentRepository.save(comment);
+
+        return comment.getId();
     }
 
     @Transactional
