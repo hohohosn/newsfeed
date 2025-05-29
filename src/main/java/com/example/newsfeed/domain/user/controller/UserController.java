@@ -1,9 +1,6 @@
 package com.example.newsfeed.domain.user.controller;
 
-import com.example.newsfeed.domain.user.dto.LoginRequestDto;
-import com.example.newsfeed.domain.user.dto.LoginResponseDto;
-import com.example.newsfeed.domain.user.dto.UserRequestDto;
-import com.example.newsfeed.domain.user.dto.UserResponseDto;
+import com.example.newsfeed.domain.user.dto.*;
 import com.example.newsfeed.domain.user.entity.User;
 import com.example.newsfeed.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -103,5 +100,12 @@ public class UserController {
                                              @RequestParam Long friendId){
         userService.deleteFriend(userid, friendId);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // TODO pathVariable 지우고 세션에서...
+    @GetMapping("/{userId}/follow")
+    public ResponseEntity<UserFollowResponseDto> getUserFollow(@PathVariable Long userId) {
+        UserFollowResponseDto dto = userService.getUserFollow(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 }

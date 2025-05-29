@@ -10,9 +10,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,24 +45,31 @@ public class User extends BaseEntity {
 
     // 내가 친구추가한 사람들
     @OneToMany(mappedBy = "user")
-    List<Friendship> following = new ArrayList<>();
+    private Set<Friendship> following = new HashSet<>();
 
 
     // 나를 친구추가한 사람들
     @OneToMany(mappedBy = "friend")
-    List<Friendship> follower = new ArrayList<>();
+    private Set<Friendship> follower = new HashSet<>();
+
+
 
     public void setEncodedPassword(String encodedPassword) {
         this.password = encodedPassword;
     }
 
-//    public void delete() {
-//        isDeleted = true;
-//    }
 
     public void updateProfile(String name, String phoneNumber, LocalDate birth) {
         Optional.ofNullable(name).ifPresent(n -> this.name = n);
         Optional.ofNullable(phoneNumber).ifPresent(pn -> this.phoneNumber = pn);
         Optional.ofNullable(birth).ifPresent(b -> this.birth = b);
+    }
+
+    public List<User> getFollowingList() {
+        return following.stream().map(Friendship::getFriend).toList();
+    }
+
+    public List<User> getFollowerList() {
+        return follower.stream().map(Friendship::getUser).toList();
     }
 }

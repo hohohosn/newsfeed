@@ -13,6 +13,10 @@ public class Friendship {
     public Friendship(User user, User friend) {
         this.user = user;
         this.friend = friend;
+        //양방향 연관관계 참조 설정
+        user.getFollowing().add(this);
+        friend.getFollower().add(this);
+
     }
 
     @Id

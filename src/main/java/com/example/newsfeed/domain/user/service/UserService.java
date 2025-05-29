@@ -3,10 +3,7 @@ package com.example.newsfeed.domain.user.service;
 import com.example.newsfeed.common.exception.PasswordMismatchException;
 import com.example.newsfeed.domain.user.common.PasswordEncoder;
 import com.example.newsfeed.domain.user.common.UserMapper;
-import com.example.newsfeed.domain.user.dto.LoginRequestDto;
-import com.example.newsfeed.domain.user.dto.LoginResponseDto;
-import com.example.newsfeed.domain.user.dto.UserRequestDto;
-import com.example.newsfeed.domain.user.dto.UserResponseDto;
+import com.example.newsfeed.domain.user.dto.*;
 import com.example.newsfeed.domain.user.entity.Friendship;
 import com.example.newsfeed.domain.user.entity.User;
 import com.example.newsfeed.domain.user.repository.FriendshipRepository;
@@ -101,6 +98,12 @@ public class UserService {
         // TODO 예외 던지기, 검증 후 패스 어떤거 선택??
 //       Friendship friendship = friendshipRepository.findByUserAndFriend(user, friend).orElseThrow(() -> new EntityNotFoundException("유저(id:" + user.getId() + ")와 유저(id:" + friend.getId() + ")의 친구 관계가 아닙니다."));
         friendshipRepository.findByUserAndFriend(user, friend).ifPresent(friendshipRepository::delete);
+    }
+
+    public UserFollowResponseDto getUserFollow(Long id) {
+        // TODO 개선 여부
+        User user = findByIdOrElseThrow(id);
+        return UserMapper.toFollowResponseDto(user);
     }
 
     private User findByIdOrElseThrow(Long id) {
