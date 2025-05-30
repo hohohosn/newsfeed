@@ -44,8 +44,13 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteCommentById(Long commentId) {
+    public void deleteCommentById(Long commentId) { // hard delete
         commentRepository.deleteById(commentId);
+    }
+
+    @Transactional
+    public void softDeleteCommentById(Long commentId) {
+        commentRepository.softDeleteById(commentId);
     }
 
     @Transactional
@@ -59,7 +64,7 @@ public class CommentService {
 
         return new LikeCommentResponseDto(
                 findComment.getId(),
-                findComment.getLike()
+                findComment.getLikes()
         );
     }
 
@@ -69,7 +74,7 @@ public class CommentService {
 
         return new LikeCommentResponseDto(
                 findComment.getId(),
-                findComment.getLike()
+                findComment.getLikes()
         );
     }
 }

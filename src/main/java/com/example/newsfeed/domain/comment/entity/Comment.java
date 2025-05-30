@@ -7,8 +7,10 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @Entity
+@Where(clause = "is_deleted = false")   // 전체 조회 시 삭제된 데이터 안보여줌
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "comments")
 @Getter
@@ -18,7 +20,7 @@ public class Comment extends BaseEntity{
         this.post = (Post) post;
         this.user = user;
         this.content = content;
-        this.like = 0L;
+        this.likes = 0L;
         this.isDeleted = false;
     }
 
@@ -27,14 +29,14 @@ public class Comment extends BaseEntity{
     @Column(name = "comment_id")
     private Long id;
     private String content;
-    private Long like;
+    private Long likes;
     private Boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -43,6 +45,6 @@ public class Comment extends BaseEntity{
     }
 
     public void addLike() {
-        ++this.like;
+        ++this.likes;
     }
 }

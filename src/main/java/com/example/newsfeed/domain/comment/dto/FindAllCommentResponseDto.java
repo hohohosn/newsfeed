@@ -27,7 +27,7 @@ public class FindAllCommentResponseDto {
         return new FindAllCommentResponseDto(
                 commet.getId(),
                 commet.getContent(),
-                commet.getLike(),
+                commet.getLikes(),
                 commet.getUser().getName(),
                 commet.getCreatedAt(),
                 commet.getUpdatedAt()
