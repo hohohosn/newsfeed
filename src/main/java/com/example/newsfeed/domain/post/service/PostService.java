@@ -1,8 +1,11 @@
 package com.example.newsfeed.domain.post.service;
 
+import com.example.newsfeed.domain.post.dto.LikePostResponseDto;
+import com.example.newsfeed.domain.post.dto.PostResponseDto;
 import com.example.newsfeed.domain.post.entity.Post;
 import com.example.newsfeed.domain.post.dto.PostCreateRequestDto;
 import com.example.newsfeed.domain.post.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +17,7 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    // CREATE
+    // create
     public Post createPost(PostCreateRequestDto request) {
         Post post = Post.builder()
                 .title(request.getTitle())
@@ -44,10 +47,22 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    /* DELETE (소프트 딜리트 추가 중)
+    //DELETE (소프트 딜리트 추가 중)
     public void deletePost(Long id) {
         postRepository.deleteById(id);
     }
 
-     */
+    public LikePostResponseDto addLikeAtPostId(Long postId) {
+        Post findPost = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Does not exist id = " + postId));
+        findPost.addLike();
+
+        return new LikePostResponseDto(
+                findPost.getId(),
+                findPost.getLike()
+        );
+    }
+
+
+
 }
