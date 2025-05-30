@@ -65,6 +65,11 @@ public class UserService {
     @Transactional
     public UserResponseDto updateProfile(Long id, UserRequestDto dto) {
         User user = findByIdOrElseThrow(id);
+
+        if(dto.getUserName() != null) if (dto.getUserName().isBlank()) {
+            throw new IllegalArgumentException("공백일 수 없습니다.");
+        }
+
         user.updateProfile(dto.getUserName(), dto.getPhoneNumber(), dto.getBirth());
         return UserMapper.toResponseDto(user);
     }

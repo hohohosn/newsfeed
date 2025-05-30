@@ -5,6 +5,9 @@ import com.example.newsfeed.domain.user.entity.User;
 import com.example.newsfeed.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -41,7 +44,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<Long> signup(@RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity<Long> signup(@Valid @RequestBody UserRequestDto userRequestDto){
         Long id = userService.signup(userRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(id);
     }
@@ -65,7 +68,7 @@ public class UserController {
 
     // 로그인
     @PostMapping("/signin")
-    public ResponseEntity<Long> signin (@RequestBody LoginRequestDto loginRequestDto,
+    public ResponseEntity<Long> signin (@Valid @RequestBody LoginRequestDto loginRequestDto,
                                                     HttpServletRequest request){
         User user = userService.login(loginRequestDto);
 
@@ -100,7 +103,7 @@ public class UserController {
     // 프로필 수정
     @PatchMapping("/{userId}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long userId,
-                                                      @RequestBody UserRequestDto userRequestDto,
+                                                      @Valid @RequestBody UserRequestDto userRequestDto,
                                                       HttpSession session){
         // 접근 권한 확인
         verifyUserAccess(session,userId);
@@ -111,8 +114,8 @@ public class UserController {
     // 비밀번호 수정
     @PatchMapping("/{userId}/password")
     public ResponseEntity<Void> updatePassword(@PathVariable Long userId,
-                                               @RequestParam String oldPassword,
-                                               @RequestParam String newPassword,
+                                               @NotBlank @RequestParam String oldPassword,
+                                               @NotBlank @RequestParam String newPassword,
                                                HttpSession session){
         // 접근 권한 확인
         verifyUserAccess(session,userId);
