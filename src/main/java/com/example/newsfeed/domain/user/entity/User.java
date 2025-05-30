@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
+
 
 import java.time.LocalDate;
 import java.util.*;
@@ -60,7 +60,7 @@ public class User extends BaseEntity {
 
 
     public void updateProfile(String name, String phoneNumber, LocalDate birth) {
-        Optional.ofNullable(name).ifPresent(n -> this.name = n);
+        Optional.ofNullable(name).ifPresent(n -> this.name = (n.isBlank() ? this.name :n));
         Optional.ofNullable(phoneNumber).ifPresent(pn -> this.phoneNumber = pn);
         Optional.ofNullable(birth).ifPresent(b -> this.birth = b);
     }
