@@ -48,7 +48,7 @@ public class UserService {
     }
 
     public User login(LoginRequestDto dto) {
-        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new EntityNotFoundException("계정이 올바르지 않습니다"));
+        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new PasswordMismatchException("계정이 올바르지 않습니다"));
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new PasswordMismatchException("비밀번호가 올바르지 않습니다.");
         }
