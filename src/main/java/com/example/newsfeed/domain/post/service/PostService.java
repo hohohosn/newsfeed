@@ -59,7 +59,7 @@ public class PostService {
 
         return new LikePostResponseDto(
                 findPost.getId(),
-                findPost.getLike()
+                findPost.getLikeCount()
         );
     }
 

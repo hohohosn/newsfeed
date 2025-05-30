@@ -58,5 +58,9 @@ public class Post extends BaseEntity {
    @Column(nullable = false)
    private boolean isDeleted = false;
 
+    public void addLike() {
+        ++this.likeCount;
+    }
+
 
 }
