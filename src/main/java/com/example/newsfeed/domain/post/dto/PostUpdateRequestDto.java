@@ -1,12 +1,11 @@
 package com.example.newsfeed.domain.post.dto;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @NoArgsConstructor
-public class PostCreateRequestDto {
+public class PostUpdateRequestDto {
     private String title;
     private String content;
-    private String userId;
 }

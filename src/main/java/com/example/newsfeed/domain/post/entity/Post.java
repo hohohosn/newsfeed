@@ -55,11 +55,11 @@ public class Post extends BaseEntity {
 
    //소프트 딜리트 추가 중
 
-   @Column(nullable = false)
-   private boolean isDeleted = false;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
     public void addLike() {
-        ++this.likeCount;
+        this.likes++;
     }
 
 

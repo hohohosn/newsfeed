@@ -2,11 +2,13 @@ package com.example.newsfeed.domain.post.service;
 
 import com.example.newsfeed.domain.post.dto.LikePostResponseDto;
 import com.example.newsfeed.domain.post.dto.PostResponseDto;
+import com.example.newsfeed.domain.post.dto.PostUpdateRequestDto;
 import com.example.newsfeed.domain.post.entity.Post;
 import com.example.newsfeed.domain.post.dto.PostCreateRequestDto;
 import com.example.newsfeed.domain.post.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,38 +20,42 @@ public class PostService {
     private final PostRepository postRepository;
 
     // create
-    public Post createPost(PostCreateRequestDto request) {
-        Post post = Post.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
-                .author(request.getAuthor())
-                .build();
-        return postRepository.save(post);
+    public Long createPost(PostCreateRequestDto request) {
+        Post post = new Post()
+        request.getContent(),
+                request.getUser(),  // 유저 주입 해야함
+                request.getTitle();
+        return postRepository.save(post).getId();
     }
 
+
     // READ (전체)
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public Page<PostResponseDto> getAllPosts() {
+        return postRepository.findAllByIsDeletedFalse(pageable)
+                .map(PostResponseDto::new);
     }
 
     // READ (구역)
-    public Post getPostById(Long id) {
-        return postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 게시글이 없습니다: " + id));
+    public PostResponseDto getPostById(Long id) {
+        Post post = postRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
+        return new PostResponseDto(post);
     }
 
     // UPDATE
-    public Post updatePost(Long id, PostCreateRequestDto request) {
-        Post post = getPostById(id);
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
-        post.setAuthor(request.getAuthor());
-        return postRepository.save(post);
+
+    public void updatePost(Long id, PostUpdateRequestDto request) {
+        Post post = postRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
+        post.update(request.getTitle(), request.getContent());
     }
 
     //DELETE (소프트 딜리트 추가 중)
     public void deletePost(Long id) {
-        postRepository.deleteById(id);
+        Post post = postRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
+        post.delete();
+        postRepository.softDeleteById(id);
     }
 
     public LikePostResponseDto addLikeAtPostId(Long postId) {
