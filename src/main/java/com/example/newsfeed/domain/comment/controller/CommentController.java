@@ -20,29 +20,28 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Void> saveComment(
+    public ResponseEntity<Long> saveComment(
             @RequestBody CreateCommentRequestDto requestDto
             ) {
         Long commentId = commentService.saveComment(
                 requestDto.getPostId(),
                 requestDto.getContent()
         );
-        URI location = URI.create("/comments/" + commentId);
-        return ResponseEntity.created(location).build();
+
+        return new ResponseEntity<>(commentId, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity<Void> updateCommentById(
+    public ResponseEntity<Long> updateCommentById(
             @PathVariable Long commentId,
             @RequestBody UpdateCommentRequestDto requestDto
             ) {
         commentService.updateCommentById(commentId, requestDto);
-        URI location = URI.create("/comments/" + commentId);
-        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(location).build();
+        return new ResponseEntity<>(commentId, HttpStatus.OK);
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<CommentResponseDto> deleteCommentById(
+    public ResponseEntity<Void> deleteCommentById(
             @PathVariable Long commentId
     ) {
         commentService.deleteCommentById(commentId);
