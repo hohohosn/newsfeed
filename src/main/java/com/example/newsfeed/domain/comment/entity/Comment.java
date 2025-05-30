@@ -21,8 +21,8 @@ import java.util.Optional;
 @SQLRestriction("is_deleted = false")
 public class Comment extends BaseEntity{
 
-    public Comment(Entity post, User user, String content) {
-        this.post = (Post) post;
+    public Comment(Post post, User user, String content) {
+        this.post = post;
         this.user = user;
         this.content = content;
         this.likes = 0L;
