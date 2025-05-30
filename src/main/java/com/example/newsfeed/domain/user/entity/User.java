@@ -44,12 +44,12 @@ public class User extends BaseEntity {
     private Boolean isDeleted;
 
     // 내가 친구추가한 사람들
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Friendship> following = new HashSet<>();
 
 
     // 나를 친구추가한 사람들
-    @OneToMany(mappedBy = "friend")
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL)
     private Set<Friendship> follower = new HashSet<>();
 
 

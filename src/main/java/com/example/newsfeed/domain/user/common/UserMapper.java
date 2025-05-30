@@ -19,6 +19,7 @@ public class UserMapper {
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;
     }
+
     //TODO 친구도 페이징으로 가져와야 할것 같음... 일단 전체 조회로 구현
     public static UserFollowResponseDto toFollowResponseDto(User user) {
         List<Long> followingIdList = user.getFollowingList().stream().map(User::getId).toList();

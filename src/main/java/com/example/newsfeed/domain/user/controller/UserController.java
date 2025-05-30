@@ -43,7 +43,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@RequestBody UserRequestDto userRequestDto){
         Long id = userService.signup(userRequestDto);
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).body(id);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 
     // 회원 탈퇴
@@ -72,7 +72,7 @@ public class UserController {
         HttpSession session = request.getSession();
         session.setAttribute("loginUser", user);
 
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).body(user.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(user.getId());
     }
 
     // 로그아웃
