@@ -7,53 +7,37 @@ import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 @Table(name = "posts")
-@SQLDelete(sql = "UPDATE posts SET deleted = true WHERE id = ?")
-@FilterDef(name = "deletedPostFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
-@Filter(name = "deletedPostFilter", condition = "is_deleted = :isDeleted")
-
+@SQLDelete(sql = "UPDATE posts SET is_deleted = true WHERE post_id = ?")
+@SQLRestriction("is_deleted = false")
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
     private Long id;
-
 
     @Column(nullable = false)
     private String title;
-
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false)
-    private Long likeCount = 0L;
-
-
-    private String author;
-
-
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-
-    private LocalDateTime updatedAt;
+    private Long likes = 0L;
 
     //유저랑 관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-
-   //소프트 딜리트 추가 중
 
     @Column(nullable = false)
     private boolean isDeleted = false;
@@ -62,5 +46,15 @@ public class Post extends BaseEntity {
         this.likes++;
     }
 
+    public void update(String title, String content) {
+        Optional.ofNullable(title).ifPresent(n -> this.title = n);
+        Optional.ofNullable(content).ifPresent(n -> this.content = n);
+    }
+
+    public Post(String title, User user, String content) {
+        this.title = title;
+        this.content = content;
+        this.user = user;
+    }
 
 }

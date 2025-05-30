@@ -28,10 +28,10 @@ public class PostController {
     }
 
     // 전체 게시글 조회 (페이징)
-    @GetMapping
-    public ResponseEntity<Page<PostResponseDto>> getAllPosts(Pageable pageable) {
-        return ResponseEntity.ok(postService.getAllPosts(pageable));
-    }
+//    @GetMapping
+//    public ResponseEntity<Page<PostResponseDto>> getAllPosts(Pageable pageable) {
+//        return ResponseEntity.ok(postService.getAllPosts(pageable));
+//    }
 
     // 단일 게시글 조회
     @GetMapping("/{id}")

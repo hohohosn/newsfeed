@@ -7,13 +7,18 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
 
+import java.util.Optional;
+
 @Entity
-@Where(clause = "is_deleted = false")   // 전체 조회 시 삭제된 데이터 안보여줌
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "comments")
 @Getter
+@SQLDelete(sql = "UPDATE comments SET is_deleted = true WHERE comment_id = ?")
+@SQLRestriction("is_deleted = false")
 public class Comment extends BaseEntity{
 
     public Comment(Entity post, User user, String content) {
@@ -41,7 +46,7 @@ public class Comment extends BaseEntity{
     private Post post;
 
     public void updateComment(String content) {
-        this.content = content;
+        Optional.ofNullable(content).ifPresent(n -> this.content = n);
     }
 
     public void addLike() {

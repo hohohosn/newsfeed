@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 public class PostCreateRequestDto {
     private String title;
     private String content;
-    private String userId;
+    private Long userId;
 }
