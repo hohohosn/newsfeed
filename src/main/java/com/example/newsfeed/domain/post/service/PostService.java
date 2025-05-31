@@ -67,14 +67,26 @@ public class PostService {
     }
 
     public LikePostResponseDto addLikeAtPostId(Long postId) {
-        Post findPost = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("Does not exist id = " + postId));
+        Post findPost = postRepository.findByIdOrElseThrow(postId);
         findPost.addLike();
 
         return new LikePostResponseDto(
                 findPost.getId(),
                 findPost.getLikes()
         );
+    }
+
+    public LikePostResponseDto showLikeAtPostId(Long postId) {
+        Post findPost = postRepository.findByIdOrElseThrow(postId);
+        return new LikePostResponseDto(
+                findPost.getId(),
+                findPost.getLikes()
+        );
+    }
+
+    public void deleteLikeAtPostId(Long postId) {
+        Post findPost = postRepository.findByIdOrElseThrow(postId);
+        findPost.deleteLike();
     }
 
     private Post findByIdOrElseThrow(Long postId) {

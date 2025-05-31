@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LikePostResponseDto {
     private Long postId;
-    private Long likeCount;
+    private Long likes;
 }

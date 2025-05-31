@@ -43,7 +43,11 @@ public class Post extends BaseEntity {
     private boolean isDeleted = false;
 
     public void addLike() {
-        this.likes++;
+        ++this.likes;
+    }
+
+    public void deleteLike() {
+        --this.likes;
     }
 
     public void update(String title, String content) {
