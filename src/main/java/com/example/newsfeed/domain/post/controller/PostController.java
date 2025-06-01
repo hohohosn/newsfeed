@@ -4,11 +4,16 @@ import com.example.newsfeed.domain.post.dto.PostResponseDto;
 import com.example.newsfeed.domain.post.dto.PostCreateRequestDto;
 import com.example.newsfeed.domain.post.dto.PostUpdateRequestDto;
 import com.example.newsfeed.domain.post.service.PostService;
+import com.example.newsfeed.domain.user.entity.User;
+import com.example.newsfeed.domain.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 
@@ -21,10 +26,16 @@ public class PostController {
 
     // 게시글 생성
     @PostMapping
-    public ResponseEntity<Void> createPost(@RequestBody PostCreateRequestDto requestDto) {
-        Long postId = postService.createPost(requestDto);
-        URI location = URI.create("/posts/" + postId);
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<Void> createPost(@RequestBody PostCreateRequestDto requestDto, HttpSession session) {
+
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
+
+        postService.createPost(requestDto, loginUser);
+        return ResponseEntity.ok().build();
     }
 
     // 전체 게시글 조회 (페이징)
@@ -54,4 +65,6 @@ public class PostController {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

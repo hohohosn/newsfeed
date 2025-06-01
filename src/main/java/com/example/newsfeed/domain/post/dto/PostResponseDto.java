@@ -6,14 +6,14 @@ public class PostResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String author;
+    private String userId;
     private LocalDateTime createdAt;
 
     public PostResponseDto(Long id, String title, String content, String userName, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.author = userName;
+        this.userId = userName;
         this.createdAt = createdAt;
     }
 }

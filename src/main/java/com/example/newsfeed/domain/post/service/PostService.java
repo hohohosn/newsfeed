@@ -10,7 +10,6 @@ import com.example.newsfeed.domain.user.entity.User;
 import com.example.newsfeed.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,7 @@ public class PostService {
     private final UserRepository userRepository;
 
     // create
-    public Long createPost(PostCreateRequestDto request) {
+    public Long createPost(PostCreateRequestDto request, User loginUser) {
         User user = userRepository.findById(request.getUserId()).orElseThrow(
                 () -> new EntityNotFoundException("유저(id:" + request.getUserId() + ")가 존재하지 않습니다."));
 
