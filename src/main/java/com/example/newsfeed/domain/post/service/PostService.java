@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -25,24 +27,23 @@ public class PostService {
 
     // create
     public Long createPost(PostCreateRequestDto request, User loginUser) {
-        User user = userRepository.findById(request.getUserId()).orElseThrow(
-                () -> new EntityNotFoundException("유저(id:" + request.getUserId() + ")가 존재하지 않습니다."));
 
         Post post = new Post(
-                request.getContent(),
-                user, // 유저 주입 해야함
-                request.getTitle());
+                request.getTitle(),
+                loginUser,
+                request.getContent()
+        );
         return postRepository.save(post).getId();
     }
 
 
-    // READ (전체)
-//    public Page<PostResponseDto> getAllPosts() {
-//        return postRepository.findAllByIsDeletedFalse(pageable)
-//                .map(PostResponseDto::new);
-//    }
+    // READ 전체
 
-    // READ (구역) 단건 조회
+    public Page<Post> getPosts(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
+    // READ 단건 조회
     public PostResponseDto getPostById(Long id) {
         Post post = findByIdOrElseThrow(id);
         return new PostResponseDto(

@@ -1,7 +1,6 @@
 package com.example.newsfeed.domain.post.repository;
 
 import com.example.newsfeed.domain.post.entity.Post;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
