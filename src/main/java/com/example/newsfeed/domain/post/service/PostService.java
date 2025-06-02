@@ -41,13 +41,18 @@ public class PostService {
 
     // READ 전체 조회
 
-    public Page<Post> getPosts(Pageable pageable) {
+    public Page<PostResponseDto> getPosts(Pageable pageable) {
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 Sort.by(Sort.Direction.DESC, "createdAt")
         );
-        return postRepository.findAll(sortedPageable);
+        return postRepository.findAll(sortedPageable).map(post -> new PostResponseDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getUser().getName(),    // User 엔티티의 이름을 꺼내서 전달
+                post.getCreatedAt()));
     }
 
     // READ 단건 조회
@@ -82,8 +87,13 @@ public class PostService {
     }
 
     //뉴스피드 최신순 정렬
-    public Page<Post> getFollowerPosts(Long userId, Pageable pageable) {
-        return postRepository.findFollowerPosts(userId, pageable);
+    public Page<PostResponseDto> getFollowerPosts(Long userId, Pageable pageable) {
+        return postRepository.findFollowerPosts(userId, pageable).map(post -> new PostResponseDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getUser().getName(),    // User 엔티티의 이름을 꺼내서 전달
+                post.getCreatedAt()));
     }
 
 

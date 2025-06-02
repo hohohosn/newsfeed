@@ -46,10 +46,10 @@ public class PostController {
 
     // 전체 게시글 조회 (페이징)
     @GetMapping
-    public ResponseEntity<Page<Post>> getPosts(
+    public ResponseEntity<Page<PostResponseDto>> getPosts(
             @PageableDefault(size = 10) Pageable pageable
     ) {
-        Page<Post> posts = postService.getPosts(pageable);
+        Page<PostResponseDto> posts = postService.getPosts(pageable);
         return ResponseEntity.ok(posts);
     }
 
@@ -70,6 +70,7 @@ public class PostController {
         if (loginUser == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
+
         postService.updatePost(id, request, loginUser);
         return ResponseEntity.noContent().build();
     }
@@ -89,16 +90,15 @@ public class PostController {
 
     //뉴스피드에 내가 팔로우한 사람들 게시글이 최신순으로 노출
     @GetMapping("/follower")
-    public ResponseEntity<Page<Post>> getFollowerPosts(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<PostResponseDto>> getFollowerPosts(@RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "10") int size,
                                                        @SessionAttribute(name = "loginUser", required = false) User loginUser) {
         if (loginUser == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
         Pageable pageable = PageRequest.of(page, size);
-        Page<Post> posts = postService.getFollowerPosts(loginUser.getId(), pageable);
+        Page<PostResponseDto> posts = postService.getFollowerPosts(loginUser.getId(), pageable);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
-
     }
 
 }
