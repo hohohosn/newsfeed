@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -77,7 +78,10 @@ public class CommentService {
         if (findComment.getUser().getId().equals(userId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 댓글에 좋아요를 할 수 없습니다.");
         }
-        findComment.addLike();
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."));
+
+        findComment.addLike(findUser);
 
         return new LikeCommentResponseDto(
                 findComment.getId(),
@@ -91,7 +95,11 @@ public class CommentService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 댓글에 좋아요를 할 수 없습니다.");
         }
 
-        findComment.deleteLike();
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."));
+
+        findComment.deleteLike(findUser);
+
         return new LikeCommentResponseDto(
                 findComment.getId(),
                 findComment.getLikes()

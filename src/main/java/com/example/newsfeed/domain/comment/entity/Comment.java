@@ -9,9 +9,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -49,11 +52,25 @@ public class Comment extends BaseEntity{
         Optional.ofNullable(content).ifPresent(n -> this.content = n);
     }
 
-    public void addLike() {
-        ++this.likes;
+    @ManyToMany
+    @JoinTable(
+            name = "comment_like_users",
+            joinColumns = @JoinColumn(name = "comment_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> likedUsers = new HashSet<>();
+
+    public void addLike(User user) {
+        if (!likedUsers.add(user)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요를 누르셨습니다.");
+        }
+        this.likes++;
     }
 
-    public void deleteLike() {
-        --this.likes;
+    public void deleteLike(User user) {
+        if (!likedUsers.remove(user)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "좋아요를 누르지 않았습니다.");
+        }
+        this.likes--;
     }
 }

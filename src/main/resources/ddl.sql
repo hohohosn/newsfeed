@@ -47,8 +47,15 @@ create table user_post_likes
 (
     post_id bigint,
     user_id bigint
-
 );
+
+create table comment_like_users
+(
+    comment_id BIGINT NOT NULL,
+    user_id    BIGINT NOT NULL,
+    PRIMARY KEY (comment_id, user_id)
+);
+
 
 alter table posts
     add foreign key (user_id) references users (user_id);
@@ -63,4 +70,8 @@ alter table friendships
 alter table user_post_likes
     add foreign key (post_id) references posts (post_id);
 alter table user_post_likes
+    add foreign key (user_id) references users (user_id);
+alter table comment_like_users
+    add foreign key (comment_id) references comments (comment_id);
+alter table comment_like_users
     add foreign key (user_id) references users (user_id);
