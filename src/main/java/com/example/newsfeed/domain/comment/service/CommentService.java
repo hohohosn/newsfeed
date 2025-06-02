@@ -52,9 +52,14 @@ public class CommentService {
 
     public void deleteCommentById(Long userId, Long commentId) { // hard delete
         Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
-        if (!findComment.getUser().getId().equals(userId)) {
+
+        Long commentOwnerId = findComment.getUser().getId();
+        Long postOwnerId = findComment.getPost().getUser().getId();
+
+        if (!userId.equals(commentOwnerId) && !userId.equals(postOwnerId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "댓글 삭제 권한이 없습니다.");
         }
+
         commentRepository.deleteById(commentId);
     }
 
