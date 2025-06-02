@@ -25,14 +25,14 @@ public class PostService {
     private final PostRepository postRepository;
 
     // create
-    public Long createPost(PostCreateRequestDto request, User loginUser) {
+    public void createPost(PostCreateRequestDto request, User loginUser) {
 
         Post post = new Post(
                 request.getTitle(),
                 loginUser,
                 request.getContent()
         );
-        return postRepository.save(post).getId();
+        postRepository.save(post);
     }
 
 

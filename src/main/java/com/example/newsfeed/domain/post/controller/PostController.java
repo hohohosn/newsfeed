@@ -47,7 +47,7 @@ public class PostController {
     // 전체 게시글 조회 (페이징)
     @GetMapping
     public ResponseEntity<Page<PostResponseDto>> getPosts(
-            @PageableDefault(size = 10) Pageable pageable
+            @PageableDefault() Pageable pageable
     ) {
         Page<PostResponseDto> posts = postService.getPosts(pageable);
         return ResponseEntity.ok(posts);
