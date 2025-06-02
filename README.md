@@ -1,8 +1,6 @@
 # 뉴스피드 API 
-___  
 
 ## 프로젝트 소개  
-___
 Spring MVC, JPA, Cookie/Session, Filter를 학습하고 교육적인 목적에서 진행한 프로젝트입니다.  
 인스타그램같은 SNS 애플리케이션의 API 서버를 구축하며,  
 사용자 인증 처리부터 게시글·댓글·팔로우에 관한 핵심 기능을 구현하였습니다. 
@@ -10,7 +8,6 @@ Spring MVC, JPA, Cookie/Session, Filter를 학습하고 교육적인 목적에�
 > **개발기간 : 2025.05.27 ~ 2025.06.03 (약 1주일)**
 
 ## 기술 스택
-___
 <div>
     <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=flat&logo=openjdk&logoColor=white">
     <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=springboot&logoColor=white"/>
@@ -20,16 +17,13 @@ ___
 
 
 ## ERD
-___  
 ![erd.png](erd.png)
 
 ## API 문서
-___
 API 명세는 [Swagger API 문서] ()를 클릭해주세요.
 
 
 ## 개발팀 소개
-___
 |                                          고동원                                          |                                          이동근                                           |                                          기명현                                           | 이효선 |  
 |:-------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:---:|
 | <img width="160px" src="https://avatars.githubusercontent.com/u/77458624?s=64&v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/189593889?s=64&v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/102645896?s=64&v=4" /> |<img width="160px" src="https://avatars.githubusercontent.com/u/206506649?s=64&v=4" />|
@@ -37,7 +31,6 @@ ___
 
 
 ## 주요 기능
-___
 ### 프로필 관리
 - 프로필 조회: 민감 정보 제외
 - 프로필 수정: 본인만 가능
