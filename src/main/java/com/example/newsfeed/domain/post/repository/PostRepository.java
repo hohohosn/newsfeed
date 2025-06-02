@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDateTime;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -17,11 +18,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         return findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + postId));
     }
 
-    @Modifying
-    @Query("UPDATE Post c SET c.isDeleted = true WHERE c.id = :postId")
-    void softDeleteById(@Param("postId") Long postId);
-
     @Query("select p from Post p where p.user.id in (select f.friend.id from Friendship f where f.user.id = :userId) order by p.createdAt desc")
     Page<Post> findFollowerPosts(Long userId, Pageable pageable);
 
+    @Query("select p from Post p where p.createdAt between :startDate and :endDate")
+    Page<Post> searchPosts(@Param("startDate") LocalDateTime startDate,
+                           @Param("endDate") LocalDateTime endDate,
+                           Pageable pageable);
 }
