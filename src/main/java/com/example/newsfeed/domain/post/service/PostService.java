@@ -97,8 +97,14 @@ public class PostService {
     }
 
 
-    public LikePostResponseDto addLikeAtPostId(Long postId) {
+    //좋아요 추가
+    public LikePostResponseDto addLikeAtPostId(Long postId, User loginUser) {
         Post findPost = postRepository.findByIdOrElseThrow(postId);
+
+        if (findPost.getUser().getId().equals(loginUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 게시물에는 좋아요를 누를 수 없습니다.");
+        }
+
         findPost.addLike();
 
         return new LikePostResponseDto(
@@ -107,6 +113,8 @@ public class PostService {
         );
     }
 
+
+    //좋아요 조회
     public LikePostResponseDto showLikeAtPostId(Long postId) {
         Post findPost = postRepository.findByIdOrElseThrow(postId);
         return new LikePostResponseDto(
@@ -115,6 +123,7 @@ public class PostService {
         );
     }
 
+    //좋아요 삭제
     public void deleteLikeAtPostId(Long postId) {
         Post findPost = postRepository.findByIdOrElseThrow(postId);
         findPost.deleteLike();

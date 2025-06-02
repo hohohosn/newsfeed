@@ -2,6 +2,7 @@ package com.example.newsfeed.domain.post.controller;
 
 import com.example.newsfeed.domain.post.dto.LikePostResponseDto;
 import com.example.newsfeed.domain.post.service.PostService;
+import com.example.newsfeed.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,11 @@ public class PostLikeController {
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<LikePostResponseDto> addLikeAtPostId(
-            @PathVariable Long postId
+            @PathVariable Long postId,
+            @SessionAttribute(name = "loginUser") User loginUser
     ) {
         LikePostResponseDto likePostResponseDto =
-                postService.addLikeAtPostId(postId);
+                postService.addLikeAtPostId(postId, loginUser);
         return new ResponseEntity<>(likePostResponseDto, HttpStatus.OK);
     }
 

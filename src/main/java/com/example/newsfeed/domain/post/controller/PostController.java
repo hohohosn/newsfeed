@@ -68,7 +68,7 @@ public class PostController {
             @SessionAttribute(name = "loginUser", required = false) User loginUser) {
 
         if (loginUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "게시글 수정 권한이 없습니다.");
         }
 
         postService.updatePost(id, request, loginUser);
@@ -82,7 +82,7 @@ public class PostController {
             @SessionAttribute(name = "loginUser", required = false) User loginUser) {
 
         if (loginUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "게시글 삭제 권한이 없습니다.");
         }
         postService.deletePost(id, loginUser);
         return ResponseEntity.noContent().build();
