@@ -42,8 +42,11 @@ public class UserService {
 
     // 회원탈퇴
     @Transactional
-    public void withdrawal(Long id) {
+    public void withdrawal(Long id, String password) {
         User user = findByIdOrElseThrow(id);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new PasswordMismatchException("비밀번호가 올바르지 않습니다.");
+        }
         userRepository.delete(user);
     }
 

@@ -49,15 +49,16 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<Void> withdrawal(@PathVariable Long userId,
+                                           @RequestBody UserDeleteRequestDto requestDto,
                                            HttpServletRequest request,
                                            HttpSession session){
 
         // 접근 권한 확인
         verifyUserAccess(session,userId);
 
-        userService.withdrawal(userId);
+        userService.withdrawal(userId, requestDto.getPassword());
         session = request.getSession(false);
 
         // 세션 삭제
