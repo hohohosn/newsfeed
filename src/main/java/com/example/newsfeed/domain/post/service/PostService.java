@@ -1,14 +1,9 @@
 package com.example.newsfeed.domain.post.service;
 
-import com.example.newsfeed.domain.post.dto.LikePostResponseDto;
-import com.example.newsfeed.domain.post.dto.PostResponseDto;
-import com.example.newsfeed.domain.post.dto.PostUpdateRequestDto;
+import com.example.newsfeed.domain.post.dto.*;
 import com.example.newsfeed.domain.post.entity.Post;
-import com.example.newsfeed.domain.post.dto.PostCreateRequestDto;
 import com.example.newsfeed.domain.post.repository.PostRepository;
 import com.example.newsfeed.domain.user.entity.User;
-import com.example.newsfeed.domain.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,13 +14,15 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
 
     // create
     public Long createPost(PostCreateRequestDto request, User loginUser) {
@@ -125,4 +122,16 @@ public class PostService {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + postId));
     }
 
+
+    public Page<PostResponseDto> search(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable){
+
+        return postRepository.searchPosts(startDate,endDate,pageable).map(post
+                -> new PostResponseDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getUser().getName(),
+                post.getCreatedAt()
+        ));
+    }
 }

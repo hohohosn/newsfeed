@@ -3,25 +3,25 @@ package com.example.newsfeed.domain.post.controller;
 import com.example.newsfeed.domain.post.dto.PostResponseDto;
 import com.example.newsfeed.domain.post.dto.PostCreateRequestDto;
 import com.example.newsfeed.domain.post.dto.PostUpdateRequestDto;
-import com.example.newsfeed.domain.post.entity.Post;
+
 import com.example.newsfeed.domain.post.service.PostService;
 import com.example.newsfeed.domain.user.entity.User;
-import com.example.newsfeed.domain.user.service.UserService;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 
-import java.net.URI;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/posts")
@@ -99,6 +99,14 @@ public class PostController {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostResponseDto> posts = postService.getFollowerPosts(loginUser.getId(), pageable);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<PostResponseDto>> searchPosts (@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
+                                                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
+                                                              @PageableDefault(sort = "updatedAt",
+                                                                      direction =  Sort.Direction.DESC) Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.search(startDate,endDate,pageable));
     }
 
 }
