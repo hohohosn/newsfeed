@@ -49,15 +49,16 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<Void> withdrawal(@PathVariable Long userId,
+                                           @RequestBody UserDeleteRequestDto requestDto,
                                            HttpServletRequest request,
                                            HttpSession session){
 
         // 접근 권한 확인
         verifyUserAccess(session,userId);
 
-        userService.withdrawal(userId);
+        userService.withdrawal(userId, requestDto.getPassword());
         session = request.getSession(false);
 
         // 세션 삭제
@@ -113,14 +114,13 @@ public class UserController {
     // 비밀번호 수정
     @PatchMapping("/{userId}/password")
     public ResponseEntity<Void> updatePassword(@PathVariable Long userId,
-                                               @NotBlank @RequestParam String oldPassword,
-                                               @NotBlank @RequestParam String newPassword,
+                                               @Valid @RequestBody UserUpdatePasswordRequestDto requestDto,
                                                HttpSession session){
         // 접근 권한 확인
         verifyUserAccess(session,userId);
 
 
-        userService.updatePassword(userId, oldPassword, newPassword);
+        userService.updatePassword(userId, requestDto.getOldPassword(), requestDto.getNewPassword());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     
