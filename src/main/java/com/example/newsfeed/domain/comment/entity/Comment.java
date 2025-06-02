@@ -52,4 +52,8 @@ public class Comment extends BaseEntity{
     public void addLike() {
         ++this.likes;
     }
+
+    public void deleteLike() {
+        --this.likes;
+    }
 }

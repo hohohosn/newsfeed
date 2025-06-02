@@ -9,8 +9,10 @@ import com.example.newsfeed.domain.post.entity.Post;
 import com.example.newsfeed.domain.post.repository.PostRepository;
 import com.example.newsfeed.domain.user.entity.User;
 import com.example.newsfeed.domain.user.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -39,18 +41,22 @@ public class CommentService {
         return comment.getId();
     }
 
-    public void updateCommentById(Long commentId, UpdateCommentRequestDto requestDto) {
+    public void updateCommentById(Long userId, Long commentId, UpdateCommentRequestDto requestDto) {
         Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+        if (!findComment.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "댓글 수정 권한이 없습니다.");
+        }
         findComment.updateComment(requestDto.getContent());
     }
 
-    public void deleteCommentById(Long commentId) { // hard delete
+    public void deleteCommentById(Long userId, Long commentId) { // hard delete
+        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+        if (!findComment.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "댓글 삭제 권한이 없습니다.");
+        }
         commentRepository.deleteById(commentId);
     }
 
-    public void softDeleteCommentById(Long commentId) {
-        commentRepository.softDeleteById(commentId);
-    }
 
     public List<FindAllCommentResponseDto> findAllComment() {
         List<Comment> comments = commentRepository.findAll();
@@ -66,10 +72,26 @@ public class CommentService {
         );
     }
 
-    public LikeCommentResponseDto addLikeAtCommentId(Long commentId) {
+    public LikeCommentResponseDto addLikeAtCommentId(Long userId, Long commentId) {
         Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+        if (findComment.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 댓글에 좋아요를 할 수 없습니다.");
+        }
         findComment.addLike();
 
+        return new LikeCommentResponseDto(
+                findComment.getId(),
+                findComment.getLikes()
+        );
+    }
+
+    public LikeCommentResponseDto deleteLikeAtCommentID(Long userId, Long commentId) {
+        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+        if (findComment.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 댓글에 좋아요를 할 수 없습니다.");
+        }
+
+        findComment.deleteLike();
         return new LikeCommentResponseDto(
                 findComment.getId(),
                 findComment.getLikes()
