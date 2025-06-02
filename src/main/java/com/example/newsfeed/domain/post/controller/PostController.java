@@ -65,7 +65,11 @@ public class PostController {
     public ResponseEntity<Void> updatePost(
             @PathVariable Long id,
             @RequestBody PostUpdateRequestDto request,
-            @AuthenticationPrincipal User loginUser) {
+            @SessionAttribute(name = "loginUser", required = false) User loginUser) {
+
+        if (loginUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
         postService.updatePost(id, request, loginUser);
         return ResponseEntity.noContent().build();
     }
@@ -74,7 +78,11 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(
             @PathVariable Long id,
-            @AuthenticationPrincipal User loginUser) {
+            @SessionAttribute(name = "loginUser", required = false) User loginUser) {
+
+        if (loginUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
         postService.deletePost(id, loginUser);
         return ResponseEntity.noContent().build();
     }
@@ -92,7 +100,5 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(posts);
 
     }
-
-
 
 }
