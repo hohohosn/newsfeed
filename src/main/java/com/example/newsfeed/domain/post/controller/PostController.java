@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 
 import java.net.URI;
 
@@ -61,7 +61,7 @@ public class PostController {
     }
 
     // 게시글 수정
-    @PatchMapping ("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Void> updatePost(
             @PathVariable Long id,
             @RequestBody PostUpdateRequestDto request,
@@ -78,6 +78,21 @@ public class PostController {
         postService.deletePost(id, loginUser);
         return ResponseEntity.noContent().build();
     }
+
+    //뉴스피드에 내가 팔로우한 사람들 게시글이 최신순으로 노출
+    @GetMapping("/follower")
+    public ResponseEntity<Page<Post>> getFollowerPosts(@RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "10") int size,
+                                                       @SessionAttribute(name = "loginUser", required = false) User loginUser) {
+        if (loginUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> posts = postService.getFollowerPosts(loginUser.getId(), pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+
+    }
+
 
 
 }

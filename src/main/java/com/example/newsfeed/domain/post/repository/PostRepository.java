@@ -1,6 +1,8 @@
 package com.example.newsfeed.domain.post.repository;
 
 import com.example.newsfeed.domain.post.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
@@ -18,5 +20,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Modifying
     @Query("UPDATE Post c SET c.isDeleted = true WHERE c.id = :postId")
     void softDeleteById(@Param("postId") Long postId);
+
+    @Query("select p from Post p where p.user.id in (select f.friend.id from Friendship f where f.user.id = :userId) order by p.createdAt desc")
+    Page<Post> findFollowerPosts(Long userId, Pageable pageable);
 
 }

@@ -81,6 +81,12 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    //뉴스피드 최신순 정렬
+    public Page<Post> getFollowerPosts(Long userId, Pageable pageable) {
+        return postRepository.findFollowerPosts(userId, pageable);
+    }
+
+
     public LikePostResponseDto addLikeAtPostId(Long postId) {
         Post findPost = postRepository.findByIdOrElseThrow(postId);
         findPost.addLike();
