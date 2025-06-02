@@ -1,7 +1,9 @@
 package com.example.newsfeed.domain.post.dto;
 
 import java.time.LocalDateTime;
+import lombok.Getter;
 
+@Getter
 public class PostResponseDto {
     private Long id;
     private String title;
