@@ -11,10 +11,12 @@ Spring MVC, JPA, Cookie/Session, Filter를 학습하고 교육적인 목적에�
 
 ## 기술 스택
 ___
-<img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=flat&logo=openjdk&logoColor=white">
-<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=springboot&logoColor=white"/>
-<img src="https://img.shields.io/badge/Hibernate-59666C?style=flat&logo=Hibernate&logoColor=white"/>
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white"/>
+<div>
+    <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=flat&logo=openjdk&logoColor=white">
+    <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=springboot&logoColor=white"/>
+    <img src="https://img.shields.io/badge/Hibernate-59666C?style=flat&logo=Hibernate&logoColor=white"/>
+    <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white"/>
+</div>
 
 
 ## ERD
@@ -31,7 +33,7 @@ ___
 |                                          고동원                                          |                                          이동근                                           |                                          기명현                                           | 이효선 |  
 |:-------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:---:|
 | <img width="160px" src="https://avatars.githubusercontent.com/u/77458624?s=64&v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/189593889?s=64&v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/102645896?s=64&v=4" /> |<img width="160px" src="https://avatars.githubusercontent.com/u/206506649?s=64&v=4" />|
-|                          [@ko-dongwon](ko-dongwon kodongwon)                          |                          [@DG0702](https://github.com/DG0702)                          |                          [@Gi0000](https://github.com/Gi0000)                          |[@hohohosn](https://github.com/hohohosn)|
+|                          [@ko-dongwon](https://github.com/ko-dongwon)                          |                          [@DG0702](https://github.com/DG0702)                          |                          [@Gi0000](https://github.com/Gi0000)                          |[@hohohosn](https://github.com/hohohosn)|
 
 
 ## 주요 기능
