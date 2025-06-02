@@ -12,12 +12,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.net.URI;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/posts")
@@ -43,10 +47,8 @@ public class PostController {
     // 전체 게시글 조회 (페이징)
     @GetMapping
     public ResponseEntity<Page<Post>> getPosts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @PageableDefault(size = 10) Pageable pageable
     ) {
-        Pageable pageable = PageRequest.of(page, size);
         Page<Post> posts = postService.getPosts(pageable);
         return ResponseEntity.ok(posts);
     }
@@ -59,18 +61,21 @@ public class PostController {
     }
 
     // 게시글 수정
-    @PutMapping("/{id}")
+    @PatchMapping ("/{id}")
     public ResponseEntity<Void> updatePost(
             @PathVariable Long id,
-            @RequestBody PostUpdateRequestDto request) {
-        postService.updatePost(id, request);
+            @RequestBody PostUpdateRequestDto request,
+            @AuthenticationPrincipal User loginUser) {
+        postService.updatePost(id, request, loginUser);
         return ResponseEntity.noContent().build();
     }
 
     // 게시글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+    public ResponseEntity<Void> deletePost(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User loginUser) {
+        postService.deletePost(id, loginUser);
         return ResponseEntity.noContent().build();
     }
 

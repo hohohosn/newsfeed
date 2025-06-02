@@ -10,6 +10,8 @@ import com.example.newsfeed.domain.user.entity.User;
 import com.example.newsfeed.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,10 +39,15 @@ public class PostService {
     }
 
 
-    // READ 전체
+    // READ 전체 조회
 
     public Page<Post> getPosts(Pageable pageable) {
-        return postRepository.findAll(pageable);
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+        return postRepository.findAll(sortedPageable);
     }
 
     // READ 단건 조회
@@ -56,13 +63,21 @@ public class PostService {
     }
 
     // UPDATE
-    public void updatePost(Long id, PostUpdateRequestDto request) {
-        Post post = postRepository.findByIdOrElseThrow(id);
+    public void updatePost(Long id, PostUpdateRequestDto request, User loginUser) {
+        Post post = findByIdOrElseThrow(id);
+        if (!post.getUser().getId().equals(loginUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한이 없습니다.");
+        }
         post.update(request.getTitle(), request.getContent());
     }
 
     //DELETE
-    public void deletePost(Long id) {
+    public void deletePost(Long id, User loginUser) {
+        Post post = findByIdOrElseThrow(id);
+
+        if (!post.getUser().getId().equals(loginUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.");
+        }
         postRepository.deleteById(id);
     }
 
