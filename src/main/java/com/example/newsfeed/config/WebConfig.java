@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class WebConfig {
 
     @Bean
-    public FilterRegistrationBean UserFilter(){
+    public FilterRegistrationBean<Filter> UserFilter(){
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
 
         // Filter 등록
