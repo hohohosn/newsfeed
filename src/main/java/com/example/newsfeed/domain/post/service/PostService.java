@@ -4,6 +4,7 @@ import com.example.newsfeed.domain.post.dto.*;
 import com.example.newsfeed.domain.post.entity.Post;
 import com.example.newsfeed.domain.post.repository.PostRepository;
 import com.example.newsfeed.domain.user.entity.User;
+import com.example.newsfeed.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     // create
     public void createPost(PostCreateRequestDto request, User loginUser) {
@@ -102,7 +104,8 @@ public class PostService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 게시물에는 좋아요를 누를 수 없습니다.");
         }
 
-        findPost.addLike();
+        // 중복 체크 + 좋아요 반영
+        findPost.addLike(loginUser);
 
         return new LikePostResponseDto(
                 findPost.getId(),
@@ -120,17 +123,25 @@ public class PostService {
         );
     }
 
-    //좋아요 삭제
-    public void deleteLikeAtPostId(Long postId) {
-        Post findPost = postRepository.findByIdOrElseThrow(postId);
-        findPost.deleteLike();
+    public LikePostResponseDto deleteLikeAtPostId(Long userId, Long postId) {
+        Post findPost = postRepository.findByIdOrElseThrow(postId); // ✅ 타입 및 변수명 수정
+
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."));
+
+        findPost.deleteLike(findUser); // ✅ 중복 체크 포함된 메서드
+
+        return new LikePostResponseDto(
+                findPost.getId(),
+                findPost.getLikes()
+        );
     }
+
 
     private Post findByIdOrElseThrow(Long postId) {
         return postRepository.findById(postId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + postId));
     }
-
 
     public Page<PostResponseDto> search(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable){
 
