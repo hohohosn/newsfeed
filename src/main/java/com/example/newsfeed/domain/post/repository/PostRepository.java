@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     default Post findByIdOrElseThrow(Long postId) {
-        return findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + postId));
+        return findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 게시글이 존재하지 않습니다." + postId));
     }
 
     @Query("select p from Post p where p.user.id in (select f.friend.id from Friendship f where f.user.id = :userId) order by p.createdAt desc")
