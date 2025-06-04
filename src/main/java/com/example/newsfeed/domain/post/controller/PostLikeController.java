@@ -3,16 +3,26 @@ package com.example.newsfeed.domain.post.controller;
 import com.example.newsfeed.domain.post.dto.LikePostResponseDto;
 import com.example.newsfeed.domain.post.service.PostService;
 import com.example.newsfeed.domain.user.entity.User;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/posts")
 @AllArgsConstructor
 public class PostLikeController {
     private final PostService postService;
+
+    private User getLoginUser(HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
+        return loginUser;
+    }
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<LikePostResponseDto> addLikeAtPostId(
@@ -34,10 +44,13 @@ public class PostLikeController {
     }
 
     @DeleteMapping("/{postId}/like")
-    public ResponseEntity<Void> deleteLikeAtPostId(
-            @PathVariable Long postId
+    public ResponseEntity<LikePostResponseDto> deleteLikeAtPostId(
+            @PathVariable Long postId,
+            HttpSession session
     ) {
-        postService.deleteLikeAtPostId(postId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        User loginUser = getLoginUser(session);
+
+        LikePostResponseDto likePostResponseDto = postService.deleteLikeAtPostId(loginUser.getId(),postId);
+        return new ResponseEntity<>(likePostResponseDto,HttpStatus.OK);
     }
 }

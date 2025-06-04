@@ -45,7 +45,7 @@ public class Post extends BaseEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "post_like_users",
+            name = "user_post_likes",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
