@@ -143,4 +143,15 @@ public class PostService {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + postId));
     }
 
+    public Page<PostResponseDto> search(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable){
+
+        return postRepository.searchPosts(startDate,endDate,pageable).map(post
+                -> new PostResponseDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getUser().getName(),
+                post.getCreatedAt()
+        ));
+    }
 }
