@@ -20,7 +20,7 @@ Spring MVC, JPA, Cookie/Session, Filter를 학습하고 교육적인 목적에�
 ![erd.png](erd.png)
 
 ## API 문서
-API 명세는 [Swagger API 문서](http://newsfeed.o-r.kr/swagger-ui/index.html)를 클릭해주세요.
+~~API 명세는 [Swagger API 문서](http://newsfeed.o-r.kr/swagger-ui/index.html)를 클릭해주세요.~~
 
 
 ## 개발팀 소개
